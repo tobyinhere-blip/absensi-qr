@@ -1,0 +1,115 @@
+// Prisma Schema for QR Attendance System
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  password_hash String
+  role          String   @default("teacher") // "admin" | "teacher"
+  status        String   @default("active")  // "active" | "inactive"
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Class {
+  id            String    @id @default(uuid())
+  name          String    @unique
+  grade         String
+  academic_year String
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+  students      Student[]
+
+  @@map("classes")
+}
+
+model Student {
+  id          String       @id @default(uuid())
+  student_id  String       @unique
+  name        String
+  class_id    String
+  class       Class        @relation(fields: [class_id], references: [id], onDelete: Cascade)
+  qr_token    String       @unique
+  photo       String?
+  status      String       @default("active") // "active" | "inactive"
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+  attendances Attendance[]
+
+  @@index([student_id])
+  @@index([qr_token])
+  @@index([class_id])
+  @@map("students")
+}
+
+model AttendanceSession {
+  id          String       @id @default(uuid())
+  name        String
+  date        String       // YYYY-MM-DD
+  start_time  String       // HH:mm (e.g. "07:00")
+  late_after  String       // HH:mm (e.g. "07:30")
+  end_time    String       // HH:mm (e.g. "08:30")
+  status      String       @default("open") // "open" | "closed"
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+  attendances Attendance[]
+
+  @@map("attendance_sessions")
+}
+
+model Attendance {
+  id              String            @id @default(uuid())
+  student_id      String
+  student         Student           @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  session_id      String
+  session         AttendanceSession @relation(fields: [session_id], references: [id], onDelete: Cascade)
+  attendance_date String            // YYYY-MM-DD
+  check_in_time   String            // HH:mm:ss
+  status          String            // "present" | "late" | "excused" | "absent"
+  scanned_by      String?
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
+
+  @@unique([student_id, session_id])
+  @@index([student_id])
+  @@index([session_id])
+  @@index([attendance_date])
+  @@map("attendance")
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  user_id     String?
+  action      String
+  entity_type String
+  entity_id   String?
+  metadata    String?
+  created_at  DateTime @default(now())
+
+  @@map("audit_logs")
+}
+
+model Settings {
+  id                 String   @id @default("default")
+  school_name        String   @default("SMP Negeri 1")
+  school_logo        String?
+  timezone           String   @default("Asia/Makassar")
+  default_start_time String   @default("07:00")
+  default_late_time  String   @default("07:30")
+  default_end_time    String   @default("08:30")
+  updated_at         DateTime @updatedAt
+
+  @@map("settings")
+}
