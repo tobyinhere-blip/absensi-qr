@@ -378,7 +378,7 @@ export default function StudentManagementPage() {
               </div>
             )}
 
-            <form onSubmit={handleAddSubmit} className="space-y-4 text-xs">
+            <form onSubmit={handleAddSubmit} autoComplete="off" className="space-y-4 text-xs">
               <div>
                 <label className="block text-slate-300 font-semibold mb-1">ID Siswa / NIS *</label>
                 <input
@@ -387,6 +387,7 @@ export default function StudentManagementPage() {
                   onChange={(e) => setFormData({ ...formData, student_id: e.target.value })}
                   placeholder="Contoh: STD006"
                   required
+                  autoComplete="off"
                   className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -399,6 +400,7 @@ export default function StudentManagementPage() {
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Contoh: Farhan Pratama"
                   required
+                  autoComplete="off"
                   className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -427,6 +429,7 @@ export default function StudentManagementPage() {
                   value={formData.photo}
                   onChange={(e) => setFormData({ ...formData, photo: e.target.value })}
                   placeholder="https://..."
+                  autoComplete="off"
                   className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -470,7 +473,7 @@ export default function StudentManagementPage() {
               </div>
             )}
 
-            <form onSubmit={handleEditSubmit} className="space-y-4 text-xs">
+            <form onSubmit={handleEditSubmit} autoComplete="off" className="space-y-4 text-xs">
               <div>
                 <label className="block text-slate-300 font-semibold mb-1">ID Siswa / NIS</label>
                 <input
@@ -478,6 +481,7 @@ export default function StudentManagementPage() {
                   value={formData.student_id}
                   onChange={(e) => setFormData({ ...formData, student_id: e.target.value })}
                   required
+                  autoComplete="off"
                   className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white"
                 />
               </div>
@@ -489,6 +493,7 @@ export default function StudentManagementPage() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
+                  autoComplete="off"
                   className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white"
                 />
               </div>
