@@ -420,8 +420,58 @@ export default function ScannerPage() {
           <div className="absolute bottom-4 right-4 w-7 h-7 border-b-2 border-r-2 border-blue-500 z-20 pointer-events-none rounded-br-lg" />
 
           {/* Sweeping Laser Scan Line Overlay */}
-          {isScanning && (
+          {isScanning && !feedback && (
             <div className="absolute inset-x-4 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent z-20 pointer-events-none animate-scan-laser shadow-[0_0_15px_#22d3ee]" />
+          )}
+
+          {/* Direct Camera Viewfinder HUD Overlay Notification (Directly inside Camera Box as requested!) */}
+          {feedback && (
+            <div
+              className={`absolute inset-0 z-30 flex flex-col items-center justify-center p-6 text-center backdrop-blur-md animate-in fade-in zoom-in-95 duration-200 ${
+                feedback.type === 'success_present'
+                  ? 'bg-emerald-950/90 text-emerald-100'
+                  : feedback.type === 'success_late'
+                  ? 'bg-amber-950/90 text-amber-100'
+                  : feedback.type === 'duplicate'
+                  ? 'bg-amber-950/90 text-amber-100'
+                  : 'bg-rose-950/90 text-rose-100'
+              }`}
+            >
+              <div className="mb-3 p-4 rounded-3xl bg-white/10 shadow-2xl border border-white/20 animate-bounce">
+                {feedback.type === 'success_present' && <CheckCircle2 className="w-14 h-14 text-emerald-400" />}
+                {feedback.type === 'success_late' && <CheckCircle2 className="w-14 h-14 text-amber-400" />}
+                {feedback.type === 'duplicate' && <AlertTriangle className="w-14 h-14 text-amber-400" />}
+                {(feedback.type === 'invalid' || feedback.type === 'inactive' || feedback.type === 'closed' || feedback.type === 'error') && (
+                  <XCircle className="w-14 h-14 text-rose-400" />
+                )}
+              </div>
+
+              <h2 className="text-xl font-extrabold tracking-tight mb-1">{feedback.title}</h2>
+              <p className="text-xs opacity-90 max-w-xs leading-relaxed">{feedback.message}</p>
+
+              {feedback.student && (
+                <div className="mt-4 pt-3 border-t border-white/20 w-full max-w-xs grid grid-cols-2 gap-2 text-left text-xs bg-black/30 p-3 rounded-xl border border-white/10">
+                  <div>
+                    <span className="opacity-70 text-[10px] uppercase font-bold tracking-wider block">Siswa</span>
+                    <p className="font-bold text-white truncate">{feedback.student.name}</p>
+                  </div>
+                  <div>
+                    <span className="opacity-70 text-[10px] uppercase font-bold tracking-wider block">NIS</span>
+                    <p className="font-mono font-bold text-blue-300">{feedback.student.student_id}</p>
+                  </div>
+                  <div>
+                    <span className="opacity-70 text-[10px] uppercase font-bold tracking-wider block">Kelas</span>
+                    <p className="font-semibold text-slate-200">{feedback.student.class}</p>
+                  </div>
+                  {feedback.time && (
+                    <div>
+                      <span className="opacity-70 text-[10px] uppercase font-bold tracking-wider block">Waktu</span>
+                      <p className="font-mono font-bold text-emerald-300">{feedback.time}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           )}
 
           {cameraError && (
@@ -501,60 +551,6 @@ export default function ScannerPage() {
             <span>Absen</span>
           </button>
         </form>
-
-        {/* Dynamic Scan Result Feedback Overlay Banner */}
-        {feedback && (
-          <div
-            className={`w-full mt-4 p-5 rounded-2xl border shadow-2xl transition-all animate-in fade-in zoom-in duration-200 ${
-              feedback.type === 'success_present'
-                ? 'bg-emerald-950/90 border-emerald-500/60 text-emerald-100 glow-emerald'
-                : feedback.type === 'success_late'
-                ? 'bg-amber-950/90 border-amber-500/60 text-amber-100 glow-amber'
-                : feedback.type === 'duplicate'
-                ? 'bg-amber-950/90 border-amber-500/60 text-amber-100 glow-amber'
-                : 'bg-rose-950/90 border-rose-500/60 text-rose-100 glow-rose'
-            }`}
-          >
-            <div className="flex items-start gap-3.5">
-              <div className="p-2.5 rounded-xl bg-white/10 shrink-0 shadow-inner">
-                {feedback.type === 'success_present' && <CheckCircle2 className="w-8 h-8 text-emerald-400" />}
-                {feedback.type === 'success_late' && <AlertTriangle className="w-8 h-8 text-amber-400" />}
-                {feedback.type === 'duplicate' && <AlertTriangle className="w-8 h-8 text-amber-400" />}
-                {(feedback.type === 'invalid' || feedback.type === 'inactive' || feedback.type === 'closed' || feedback.type === 'error') && (
-                  <XCircle className="w-8 h-8 text-rose-400" />
-                )}
-              </div>
-
-              <div className="flex-1">
-                <h3 className="font-extrabold text-base leading-snug tracking-tight">{feedback.title}</h3>
-                <p className="text-xs opacity-90 mt-0.5 leading-relaxed">{feedback.message}</p>
-
-                {feedback.student && (
-                  <div className="mt-3 pt-3 border-t border-white/10 grid grid-cols-2 gap-2 text-xs">
-                    <div>
-                      <span className="opacity-70 text-[10px] uppercase font-bold tracking-wider">Nama Siswa</span>
-                      <p className="font-bold text-sm text-white">{feedback.student.name}</p>
-                    </div>
-                    <div>
-                      <span className="opacity-70 text-[10px] uppercase font-bold tracking-wider">NIS / ID</span>
-                      <p className="font-mono font-bold text-sm text-blue-300">{feedback.student.student_id}</p>
-                    </div>
-                    <div>
-                      <span className="opacity-70 text-[10px] uppercase font-bold tracking-wider">Kelas</span>
-                      <p className="font-semibold text-slate-200">{feedback.student.class}</p>
-                    </div>
-                    {feedback.time && (
-                      <div>
-                        <span className="opacity-70 text-[10px] uppercase font-bold tracking-wider">Check-in</span>
-                        <p className="font-mono font-semibold text-emerald-300">{feedback.time}</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
 
         <div className="mt-6 text-center text-[11px] text-slate-400 font-medium">
           <p>Arahkan Kode QR Siswa ke area pemindai. Sistem akan otomatis memproses data.</p>
