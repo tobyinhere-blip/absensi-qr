@@ -1,10 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { User, Bell, QrCode } from 'lucide-react';
+import { User, Bell, QrCode, Menu } from 'lucide-react';
 import Link from 'next/link';
 
-export default function Navbar() {
+interface NavbarProps {
+  onToggleMobileMenu?: () => void;
+}
+
+export default function Navbar({ onToggleMobileMenu }: NavbarProps) {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
@@ -26,10 +30,19 @@ export default function Navbar() {
   });
 
   return (
-    <header className="h-16 bg-[#F4F6F9] border-b border-slate-200/80 px-6 flex items-center justify-between sticky top-0 z-20">
+    <header className="h-16 bg-[#F4F6F9] border-b border-slate-200/80 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-20">
       <div className="flex items-center gap-3">
+        {/* Mobile Hamburger Menu Toggle */}
+        <button
+          onClick={onToggleMobileMenu}
+          className="lg:hidden p-2 text-slate-600 hover:text-slate-900 hover:bg-white/80 rounded-xl border border-slate-200/80 transition-all active:scale-95 shadow-sm"
+          title="Buka Menu"
+        >
+          <Menu className="w-5 h-5 stroke-[2]" />
+        </button>
+
         <h2 className="text-xs sm:text-sm font-semibold text-slate-500">
-          SMP Negeri 1 <span className="text-slate-800 font-bold ml-1">• System Online</span>
+          SMP Negeri 1 <span className="hidden xs:inline text-slate-800 font-bold ml-1">• System Online</span>
         </h2>
       </div>
 

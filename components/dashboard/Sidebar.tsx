@@ -18,9 +18,11 @@ import {
 
 interface SidebarProps {
   userRole?: 'admin' | 'teacher';
+  isOpenMobile?: boolean;
+  onCloseMobile?: () => void;
 }
 
-export default function Sidebar({ userRole = 'admin' }: SidebarProps) {
+export default function Sidebar({ userRole = 'admin', isOpenMobile = false, onCloseMobile }: SidebarProps) {
   const pathname = usePathname();
 
   const handleLogout = async () => {
@@ -88,18 +90,29 @@ export default function Sidebar({ userRole = 'admin' }: SidebarProps) {
 
   const filteredItems = navItems.filter((item) => item.roles.includes(userRole));
 
-  return (
-    <aside className="w-64 bg-[#131722] border-r border-slate-800/80 flex flex-col justify-between h-screen sticky top-0 shrink-0 select-none z-30">
+  const content = (
+    <aside className="w-64 bg-[#131722] border-r border-slate-800/80 flex flex-col justify-between h-full select-none">
       <div>
-        {/* Brand Logo */}
-        <div className="p-5 border-b border-slate-800/60 flex items-center gap-3">
-          <div className="p-2.5 bg-indigo-600/30 border border-indigo-500/40 rounded-xl text-indigo-400 shadow-md shadow-indigo-500/10">
-            <QrCode className="w-6 h-6 stroke-[1.75]" />
+        {/* Brand Logo Header */}
+        <div className="p-5 border-b border-slate-800/60 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-indigo-600/30 border border-indigo-500/40 rounded-xl text-indigo-400 shadow-md shadow-indigo-500/10">
+              <QrCode className="w-6 h-6 stroke-[1.75]" />
+            </div>
+            <div>
+              <h1 className="font-extrabold text-white text-base leading-tight tracking-tight">Absensi QR</h1>
+              <p className="text-[11px] text-slate-400 font-medium">SMP Negeri 1</p>
+            </div>
           </div>
-          <div>
-            <h1 className="font-extrabold text-white text-base leading-tight tracking-tight">Absensi QR</h1>
-            <p className="text-[11px] text-slate-400 font-medium">SMP Negeri 1</p>
-          </div>
+
+          {onCloseMobile && (
+            <button
+              onClick={onCloseMobile}
+              className="lg:hidden p-1.5 text-slate-400 hover:text-white rounded-lg bg-slate-800/60"
+            >
+              <ChevronRight className="w-5 h-5 rotate-180" />
+            </button>
+          )}
         </div>
 
         {/* Navigation Menu */}
@@ -112,6 +125,7 @@ export default function Sidebar({ userRole = 'admin' }: SidebarProps) {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={onCloseMobile}
                 className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                   isActive
                     ? 'bg-[#282E47] text-indigo-300 shadow-sm border border-indigo-500/30'
@@ -147,5 +161,25 @@ export default function Sidebar({ userRole = 'admin' }: SidebarProps) {
         </button>
       </div>
     </aside>
+  );
+
+  return (
+    <>
+      {/* Desktop Sidebar (Fixed) */}
+      <div className="hidden lg:block h-screen sticky top-0 shrink-0 z-30">
+        {content}
+      </div>
+
+      {/* Mobile Drawer (Slide-over with Backdrop) */}
+      {isOpenMobile && (
+        <div className="fixed inset-0 z-50 lg:hidden flex">
+          <div
+            className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity"
+            onClick={onCloseMobile}
+          />
+          <div className="relative z-50 h-full">{content}</div>
+        </div>
+      )}
+    </>
   );
 }
