@@ -15,9 +15,10 @@ interface StudentCardProps {
   };
   schoolName?: string;
   onRegenerateQR?: () => void;
+  onClose?: () => void;
 }
 
-export default function StudentCard({ student, schoolName = 'SMP NEGERI 1', onRegenerateQR }: StudentCardProps) {
+export default function StudentCard({ student, schoolName = 'SMP NEGERI 1', onRegenerateQR, onClose }: StudentCardProps) {
   const [qrUrl, setQrUrl] = useState<string>('');
 
   useEffect(() => {
@@ -43,10 +44,10 @@ export default function StudentCard({ student, schoolName = 'SMP NEGERI 1', onRe
   return (
     <div className="flex flex-col items-center gap-6">
       {/* Action Buttons */}
-      <div className="flex items-center gap-3 print:hidden">
+      <div className="flex flex-wrap items-center justify-center gap-3 print:hidden">
         <button
           onClick={handlePrint}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow flex items-center gap-2 transition-all"
+          className="px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow flex items-center gap-2 transition-all active:scale-95"
         >
           <Printer className="w-4 h-4" />
           Cetak Kartu Siswa
@@ -54,7 +55,7 @@ export default function StudentCard({ student, schoolName = 'SMP NEGERI 1', onRe
 
         <button
           onClick={handleDownloadQR}
-          className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold rounded-xl shadow flex items-center gap-2 transition-all"
+          className="px-3.5 py-2 bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold rounded-xl shadow flex items-center gap-2 transition-all active:scale-95"
         >
           <Download className="w-4 h-4" />
           Unduh QR Code
@@ -63,10 +64,19 @@ export default function StudentCard({ student, schoolName = 'SMP NEGERI 1', onRe
         {onRegenerateQR && (
           <button
             onClick={onRegenerateQR}
-            className="px-4 py-2 bg-amber-600/20 text-amber-300 hover:bg-amber-600/30 border border-amber-500/30 text-xs font-semibold rounded-xl flex items-center gap-2 transition-all"
+            className="px-3.5 py-2 bg-amber-600/20 text-amber-300 hover:bg-amber-600/30 border border-amber-500/30 text-xs font-semibold rounded-xl flex items-center gap-2 transition-all active:scale-95"
           >
             <RefreshCw className="w-4 h-4" />
             Regenerasi QR
+          </button>
+        )}
+
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="px-3.5 py-2 bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 border border-rose-500/30 text-xs font-semibold rounded-xl flex items-center gap-2 transition-all active:scale-95"
+          >
+            Tutup
           </button>
         )}
       </div>

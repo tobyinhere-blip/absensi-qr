@@ -544,17 +544,28 @@ export default function StudentManagementPage() {
 
       {/* MODAL: Printable Student Card */}
       {showCardModal && selectedStudent && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+        <div
+          onClick={() => setShowCardModal(false)}
+          className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 relative max-h-[90vh] overflow-y-auto"
+          >
             <div className="flex items-center justify-between border-b border-slate-800 pb-3 print:hidden">
               <h3 className="font-bold text-white text-base">Kartu Pelajar & QR Code</h3>
-              <button onClick={() => setShowCardModal(false)} className="text-slate-400 hover:text-white">
+              <button
+                onClick={() => setShowCardModal(false)}
+                className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded-xl transition-all"
+                title="Tutup Modal"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <StudentCard
               student={selectedStudent}
+              onClose={() => setShowCardModal(false)}
               onRegenerateQR={() => {
                 setShowCardModal(false);
                 openRegenModal(selectedStudent);
